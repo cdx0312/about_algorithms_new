@@ -1,46 +1,42 @@
 import java.util.*;
 
-/**
- * @program: about_algorithms
- * @author: cdx
- * @create: 2018-09-15 16:46
- **/
 public class Main {
-    public static void main(String[] args) {
-        Scanner sc = new Scanner(System.in);
-        int M = sc.nextInt();
-        int A = sc.nextInt();
-        int R= sc.nextInt();
-        System.out.println(getRes(M, A, R));
+
+    private List<String> res = new ArrayList<>();
+
+    public List<String> restoreIpAddresses(String s) {
+        dfs(new StringBuilder(), 0, s, 0, 0);
+        return res;
     }
 
-    private static double getRes(int M, int A, int R) {
-        if (A + R <= M)
-            return 1;
-        double[] res = new double[M+1];
-        res[0] = 0;
-        for (int i = 1; i < R + 1; i++) {
-            if (i <= M)
-                res[i] += 1 * 1.0 / R;
+    /**
+     * DFS方法，回溯法应用
+     * @param sb 拼接的字符串
+     * @param pos 字符串的下标
+     * @param s 输入的字符串
+     * @param num 组成的数字
+     * @param dot 点的个数
+     */
+    private void dfs(StringBuilder sb, int pos, String s, int num, int dot) {
+        if (pos == s.length()) {
+            if (dot == 3)
+                res.add(sb.toString());
+            return;
         }
-        for (int a = 1; a < A;a++) {
-            for (int i = a; i < M+1; i++) {
-                double tmp = 0.0;
-                if (i < R) {
-                    for (int j = 0; j < i; j++)
-                        tmp += res[j];
-                    res[i] += tmp / R;
-                } else {
-                    for (int j = 0; j < R; j++)
-                        tmp += res[i-j];
-                    res[i] += tmp / R;
-                }
+
+        if (num * 10 + s.charAt(pos) - '0' <= 25) {
+            if (pos == 0 || num != 0) {
+                sb.append(s.charAt(pos));
+                dfs(sb, pos + 1, s, num * 10 + s.charAt(pos)-'0', dot);
+                sb.deleteCharAt(sb.length() - 1);
             }
         }
-        double sum = 0;
-        for (double d : res) {
-            sum += d;
+        if (dot < 3 && pos > 0) {
+            sb.append(".");
+            sb.append(s.charAt(pos));
+            dfs(sb, pos + 1, s, s.charAt(pos) - '0', dot + 1);
+            sb.deleteCharAt(sb.length() - 1);
+            sb.deleteCharAt(sb.length() - 1);
         }
-        return sum;
     }
 }

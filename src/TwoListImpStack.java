@@ -40,5 +40,4 @@ public class TwoListImpStack {
         return null;
     }
 
-
 }
